@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Gedcomx::Jruby::VERSION
   spec.authors       = ["Daniel Alkalai"]
   spec.email         = ["djalkalai@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{Gedcomx ruby parser }
+  spec.description   = %q{Provides ruby calls to import, process, and export Gedcomx files}
   spec.homepage      = ""
   spec.license       = "MIT"
 

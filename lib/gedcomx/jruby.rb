@@ -2,6 +2,6 @@ require "gedcomx/jruby/version"
 
 module Gedcomx
   module Jruby
-    # Your code goes here...
+    puts 'HELLO WORLD!!'
   end
 end
