@@ -1,4 +1,5 @@
 require "gedcomx/jruby/version"
+Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
 
 module Gedcomx
 

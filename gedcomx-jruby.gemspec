@@ -1,7 +1,6 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
 require 'gedcomx/jruby/version'
 require 'gedcomx/gedcomx'
 require 'gedcomx/iterator'
