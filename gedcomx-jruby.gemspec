@@ -6,6 +6,9 @@ require 'gedcomx/gedcomx'
 require 'gedcomx/iterator'
 require 'gedcomx/record'
 require 'gedcomx/person'
+require 'gedcomx/relationship'
+require 'gedcomx/writer'
+Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
 
 Gem::Specification.new do |spec|
   spec.name          = "gedcomx-jruby"

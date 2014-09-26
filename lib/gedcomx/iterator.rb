@@ -2,6 +2,9 @@
 module Gedcomx
   class Iterator
     def initialize(input)
+      unless File.file?(input)
+        input = Gedcomx.to_java_string(input)
+      end
       @iter = org.gedcomx.util.RecordSetIterator.new(input)
     end
 
