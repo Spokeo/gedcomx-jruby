@@ -105,7 +105,7 @@ module Gedcomx
     def get_date(date_obj)
       year = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :year) ).andand.get_text.andand.to_i
       month = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :month) ).andand.get_text
-      month = MONTH_MAP[month.downcase.to_sym] unless month.nil?
+      month = Gedcomx::MONTH_MAP[month.downcase.to_sym] unless month.nil?
       day = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :day) ).andand.get_text
       {
           year: year,

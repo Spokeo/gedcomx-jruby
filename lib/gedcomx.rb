@@ -1,14 +1,6 @@
 require "gedcomx/jruby/version"
-require 'gedcomx/writer'
-require 'gedcomx/person'
-require 'gedcomx/relationship'
-require 'gedcomx/record'
-require 'gedcomx/iterator'
-
-Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
 
 module Gedcomx
-
   TYPES = {
       age: 'http://gedcomx.org/Age',
       birth: 'http://gedcomx.org/Birth',
@@ -56,7 +48,17 @@ module Gedcomx
       year: 'http://gedcomx.org/Year',
       years_married: 'http://familysearch.org/types/fields/PR_CNT_YEARS_MARR'
   }
+end
 
+require 'gedcomx/writer'
+require 'gedcomx/person'
+require 'gedcomx/relationship'
+require 'gedcomx/record'
+require 'gedcomx/iterator'
+
+Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
+
+module Gedcomx
   MONTH_MAP = {
       jan: 1,
       feb: 2,

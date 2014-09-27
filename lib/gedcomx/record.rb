@@ -1,4 +1,3 @@
-
 module Gedcomx
   class Record
 
