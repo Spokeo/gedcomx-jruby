@@ -1,4 +1,11 @@
 require "gedcomx/jruby/version"
+require 'gedcomx/writer'
+require 'gedcomx/person'
+require 'gedcomx/relationship'
+require 'gedcomx/record'
+require 'gedcomx/iterator'
+
+Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
 
 module Gedcomx
 

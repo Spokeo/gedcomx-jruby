@@ -1,5 +1,4 @@
 module Gedcomx
-
   class Person
 
     def initialize(input)
@@ -90,11 +89,11 @@ module Gedcomx
       @person.get_id
     end
 
-    def method_missing(name, *)
-      if TYPES.include? name.to_sym
-        return first_value(name.to_sym)
+    # Generates accessor methods for each of the types
+    TYPES.keys.each do |type|
+      define_method type do
+        first_value(type)
       end
-      super
     end
 
     protected
