@@ -3,7 +3,7 @@ module Gedcomx
   class Iterator
     def initialize(input)
       unless File.file?(input)
-        input = Gedcomx.to_java_string(input)
+        input = Gedcomx.input_stream(input)
       end
       @iter = org.gedcomx.util.RecordSetIterator.new(input)
     end
@@ -18,6 +18,10 @@ module Gedcomx
 
     def next
       Record.new(@iter.next)
+    end
+
+    def to_java
+      @iter
     end
   end
 end

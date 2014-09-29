@@ -17,6 +17,10 @@ module Gedcomx
       type == TYPES[:parent_child]
     end
 
+    def to_java
+      @relationship
+    end
+
     protected
 
     def type

@@ -1,12 +1,18 @@
 module Gedcomx
   class Record
 
-    attr_reader :people, :record, :relationships
+    attr_reader :people, :relationships
 
     def initialize(input)
       @record = input
-      @people = @record.persons.map{|person| Person.new(person) }
-      @relationships = @record.relationships.map{|relationship| Relationship.new(relationship) }
+      @people = @record.persons
+      unless @people.nil?
+        @people = @people.map{|person| Person.new(person) }
+      end
+      @relationships = @record.relationships
+      unless @relationships.nil?
+        @relationships = @relationships.map{|relationship| Relationship.new(relationship) }
+      end
     end
 
     def each_person
@@ -19,6 +25,10 @@ module Gedcomx
       @relationships.each do |relationship|
         yield relationship
       end
+    end
+
+    def to_java
+      @record
     end
   end
 end

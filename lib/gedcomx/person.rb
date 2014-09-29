@@ -27,8 +27,14 @@ module Gedcomx
         name_obj.name_forms.each do |name_form_obj|
           name_hash = {}
           name_hash[:full] = name_form_obj.get_full_text
-          name_hash[:first] = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:given] }.andand.get_value
-          name_hash[:last] = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:surname] }.andand.get_value
+          first_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:given] }
+          unless first_name.nil?
+            name_hash[:first] = first_name.get_value
+          end
+          last_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:surname] }
+          unless last_name.nil?
+            name_hash[:last] = last_name.get_value
+          end
           names_list << name_hash
         end
       end
@@ -36,22 +42,32 @@ module Gedcomx
     end
 
     def event_date
-      primary_date = self.primary_fact.andand.get_date
-      return if primary_date.nil?
-      get_date(primary_date)
+      primary_fact = self.primary_fact
+      unless primary_fact.nil?
+        primary_date = primary_fact.get_date
+        return get_date(primary_date) unless primary_date.nil?
+      end
     end
 
     def birth_date
-      birth_date_obj = Gedcomx.get_first_fact(@person, :birth).andand.get_date
-      get_date(birth_date_obj)
+      birthday_obj = Gedcomx.get_first_fact(@person, :birth)
+      unless birthday_obj.nil?
+        birth_date_obj = birthday_obj.get_date
+        get_date(birth_date_obj)
+      end
     end
 
     def first_value(type)
       field = Gedcomx.get_first_field(@person, type)
       unless field.nil?
-        return Gedcomx.interpreted_value(field).andand.get_text
+        interpreted = Gedcomx.interpreted_value(field)
+        return interpreted.get_text unless interpreted.nil?
+        return nil
       end
-      Gedcomx.get_first_fact(@person, type).andand.get_value
+      fact = Gedcomx.get_first_fact(@person, type)
+      unless fact.nil?
+        fact.get_value
+      end
     end
 
     def location
@@ -89,6 +105,10 @@ module Gedcomx
       @person.get_id
     end
 
+    def to_java
+      @person
+    end
+
     # Generates accessor methods for each of the types
     TYPES.keys.each do |type|
       define_method type do
@@ -103,16 +123,24 @@ module Gedcomx
     end
 
     def get_date(date_obj)
-      year = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :year) ).andand.get_text.andand.to_i
-      month = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :month) ).andand.get_text
-      month = Gedcomx::MONTH_MAP[month.downcase.to_sym] unless month.nil?
-      day = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :day) ).andand.get_text
-      {
-          year: year,
-          month: month,
-          day: day
-      }
+      date_hash = {}
+      year_field = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :year) )
+      unless year_field.nil?
+        year = year_field.get_text.to_i
+        date_hash[:year] = year
+      end
+      month_field = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :month) )
+      unless month_field.nil?
+        month = month_field.get_text
+        month = MONTH_MAP[month.downcase.to_sym] unless month.nil?
+        date_hash[:month] = month
+      end
+      day_field = Gedcomx.interpreted_value( Gedcomx.get_first_field(date_obj, :day) )
+      unless day_field.nil?
+        day = day_field.get_text
+        date_hash[:day] = day
+      end
+      date_hash
     end
-
   end
 end

@@ -7,7 +7,7 @@ module Gedcomx
     end
 
     def add_record(record)
-      @writer.writeRecord(record.record)
+      @writer.writeRecord(record.to_java)
     end
 
     def close
