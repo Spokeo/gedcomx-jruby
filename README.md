@@ -1,6 +1,6 @@
 # Gedcomx::Jruby
 
-TODO: Write a gem description
+Ruby gem that allows for iterating through GedcomX files
 
 ## Installation
 
@@ -16,9 +16,9 @@ Or install it yourself as:
 
     $ gem install gedcomx-jruby
 
-## Usage
+Note : This gem can only run on JRuby
 
-TODO: Write usage instructions here
+## Usage
 
 ## Contributing
 
