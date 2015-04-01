@@ -1,8 +1,17 @@
 module Gedcomx
   class Person
 
-    def initialize(input)
-      @person = input
+    def self.java_class
+      Java::OrgGedcomxConclusion::Person
+    end
+
+    def self.create(attributes = {})
+      person = self.new
+      person
+    end
+
+    def initialize(input = nil)
+      @person = input || self.class.java_class.new
     end
 
     def male?
@@ -39,6 +48,14 @@ module Gedcomx
         end
       end
       names_list
+    end
+
+    def add_name(name = {})
+
+    end
+
+    def add_names(names = [])
+      names.each { |name| add_name name }
     end
 
     def event_date
@@ -117,6 +134,10 @@ module Gedcomx
     end
 
     protected
+
+    def method_missing(something)
+      @person.send(something)
+    end
 
     def primary_fact
       @person.facts.find{|fact| fact.get_primary }

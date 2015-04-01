@@ -56,7 +56,30 @@ require 'gedcomx/relationship'
 require 'gedcomx/record'
 require 'gedcomx/iterator'
 
-Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
+# Load all the java jars
+require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/familysearch-api-client-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/familysearch-api-client-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/familysearch-api-model-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/familysearch-api-model-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-atom-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-atom-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-date-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-date-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-fileformat-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-fileformat-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-model-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-model-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-rs-client-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-rs-client-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-rs-rt-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-rs-rt-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-rt-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-rt-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-test-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-test-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/jaxb-all.osgi-2.1.6.jar"
 
 module Gedcomx
   MONTH_MAP = {
@@ -79,6 +102,10 @@ module Gedcomx
       state: :state,
       county: :region
   }
+
+  def self.java_uri_class
+    Java::OrgGedcomxCommon::URI
+  end
 
   def self.get_facts(obj, type)
     obj.facts.select{|fact| fact.get_type.to_s == TYPES[type] }
