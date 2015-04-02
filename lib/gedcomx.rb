@@ -33,6 +33,7 @@ module Gedcomx
       male: 'http://gedcomx.org/Male',
       marital_status: 'http://gedcomx.org/MaritalStatus',
       month: 'http://gedcomx.org/Month',
+      name: 'http://gedcomx.org/Name',
       parent_child: 'http://gedcomx.org/ParentChild',
       persistent: 'http://gedcomx.org/Persistent',
       race: 'http://gedcomx.org/Race',
@@ -55,6 +56,10 @@ require 'gedcomx/person'
 require 'gedcomx/relationship'
 require 'gedcomx/record'
 require 'gedcomx/iterator'
+require 'gedcomx/fact'
+require 'gedcomx/field'
+require 'gedcomx/field_value'
+require 'gedcomx/name'
 
 # Load all the java jars
 require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT-sources.jar"
@@ -105,6 +110,10 @@ module Gedcomx
 
   def self.java_uri_class
     Java::OrgGedcomxCommon::URI
+  end
+
+  def self.new_uri(uri_string)
+    self.java_uri_class.new(uri_string.to_s)
   end
 
   def self.get_facts(obj, type)

@@ -25,5 +25,9 @@ module Gedcomx
     def value= (value_string)
       @fact.value= value_string
     end
+
+    def to_java
+      @fact
+    end
   end
 end
