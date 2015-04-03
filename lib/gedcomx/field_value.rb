@@ -22,7 +22,7 @@ module Gedcomx
     end
 
     def type= (input_type)
-      @value.type= ( input_type.is_a? Gedcomx.java_uri_class ) ? input_type : Gedcomx.new_uri(input_type)
+      @value.type = ( input_type.is_a? Gedcomx.java_uri_class ) ? input_type : Gedcomx.new_uri(input_type)
     end
 
     def to_java

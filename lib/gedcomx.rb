@@ -4,12 +4,14 @@ module Gedcomx
   TYPES = {
       age: 'http://gedcomx.org/Age',
       birth: 'http://gedcomx.org/Birth',
+      birth_name: 'http://gedcomx.org/BirthName',
       birth_place_father: 'http://gedcomx.org/FatherBirthPlace',
       birth_place_mother: 'http://gedcomx.org/MotherBirthPlace',
       census: 'http://gedcomx.org/Census',
       collection: 'http://gedcomx.org/Collection',
       collection_id: 'http://familysearch.org/types/fields/FS_COLLECTION_ID',
       couple: 'http://gedcomx.org/Couple',
+      date: 'http://gedcomx.org/Date',
       day: 'http://gedcomx.org/Day',
       digital_artifact: 'http://gedcomx.org/DigitalArtifact',
       ethnicity: 'http://familysearch.org/types/fields/PR_ETHNICITY_CSS',
@@ -23,6 +25,7 @@ module Gedcomx
       film_number: 'http://familysearch.org/types/fields/FILM_NUMBER',
       folder: 'http://familysearch.org/types/fields/FOLDER',
       folder_image_seq: 'http://familysearch.org/types/fields/FOLDER_IMAGE_SEQ',
+      gender: 'http://gedcomx.org/Gender',
       given: 'http://gedcomx.org/Given',
       household: 'http://familysearch.org/types/fields/HOUSEHOLD_ID',
       image_apid: 'http://familysearch.org/types/fields/IMAGE_APID',
@@ -30,10 +33,12 @@ module Gedcomx
       image_number: 'http://familysearch.org/types/fields/IMAGE_NBR',
       image_pal: 'http://familysearch.org/types/fields/IMAGE_PAL',
       immigration: 'http://gedcomx.org/Immigration',
+      interpreted: 'http://gedcomx.org/Interpreted',
       male: 'http://gedcomx.org/Male',
       marital_status: 'http://gedcomx.org/MaritalStatus',
       month: 'http://gedcomx.org/Month',
       name: 'http://gedcomx.org/Name',
+      original: 'http://gedcomx.org/Original',
       parent_child: 'http://gedcomx.org/ParentChild',
       persistent: 'http://gedcomx.org/Persistent',
       race: 'http://gedcomx.org/Race',
@@ -60,6 +65,9 @@ require 'gedcomx/fact'
 require 'gedcomx/field'
 require 'gedcomx/field_value'
 require 'gedcomx/name'
+require 'gedcomx/name_part'
+require 'gedcomx/name_form'
+require 'gedcomx/date'
 
 # Load all the java jars
 require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT-sources.jar"

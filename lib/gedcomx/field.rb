@@ -11,10 +11,24 @@ module Gedcomx
       Java::OrgGedcomxRecords::FieldValue
     end
 
+    def self.create(attributes = {})
+      new_field = self.new
+      values = attributes[:values]
+
+      new_field.type = attributes[:type] if attributes[:type]
+      if values.is_a? Array
+        values.each do |value|
+          next unless value.is_a? Hash
+          new_field.add_value(value[:text], value[:type])
+        end
+      end
+      new_field
+    end
+
     def initialize(input = nil)
       @field = input || self.class.java_class.new
       @values = []
-      @values.concat @field.values.map { |value| Gedcomx::FieldValue.new(value) } if @field.values
+      @values = @field.values.map { |value| Gedcomx::FieldValue.new(value) } if @field.values
     end
 
     def add_value(value_string, input_type = nil)
@@ -26,11 +40,11 @@ module Gedcomx
     end
 
     def type
-      @field.get_type
+      @field.get_type.to_s
     end
 
     def type=(input_type)
-      @field.type= ( input_type.is_a? Gedcomx.java_uri_class ) ? input_type : Gedcomx.new_uri(input_type)
+      @field.type = ( input_type.is_a? Gedcomx.java_uri_class ) ? input_type : Gedcomx.new_uri(input_type)
     end
 
     def to_java

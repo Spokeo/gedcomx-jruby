@@ -1,6 +1,8 @@
 module Gedcomx
   class Person
 
+    attr_reader :names
+
     def self.java_class
       Java::OrgGedcomxConclusion::Person
     end
@@ -12,6 +14,8 @@ module Gedcomx
 
     def initialize(input = nil)
       @person = input || self.class.java_class.new
+      @names = []
+      @names = @person.names.each { |name| Gedcomx::Name.new(name) } if @person.names
     end
 
     def male?
@@ -30,28 +34,30 @@ module Gedcomx
     end
 
     # Returns a list of name hashes
-    def names
-      names_list = []
-      @person.names.each do |name_obj|
-        name_obj.name_forms.each do |name_form_obj|
-          name_hash = {}
-          name_hash[:full] = name_form_obj.get_full_text
-          first_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:given] }
-          unless first_name.nil?
-            name_hash[:first] = first_name.get_value
-          end
-          last_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:surname] }
-          unless last_name.nil?
-            name_hash[:last] = last_name.get_value
-          end
-          names_list << name_hash
-        end
-      end
-      names_list
-    end
+    # def names
+    #   names_list = []
+    #   @person.names.each do |name_obj|
+    #     name_obj.name_forms.each do |name_form_obj|
+    #       name_hash = {}
+    #       name_hash[:full] = name_form_obj.get_full_text
+    #       first_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:given] }
+    #       unless first_name.nil?
+    #         name_hash[:first] = first_name.get_value
+    #       end
+    #       last_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:surname] }
+    #       unless last_name.nil?
+    #         name_hash[:last] = last_name.get_value
+    #       end
+    #       names_list << name_hash
+    #     end
+    #   end
+    #   names_list
+    # end
 
-    def add_name(name = {})
-
+    def add_name(name)
+      return false unless name.is_a? Gedcomx::Name
+      @person.add_name name.to_java
+      @names << name
     end
 
     def add_names(names = [])

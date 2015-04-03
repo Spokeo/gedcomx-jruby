@@ -1,7 +1,7 @@
 module Gedcomx
   class Record
 
-    attr_accessor :people, :relationships
+    attr_reader :people, :relationships
 
     def self.java_class
       Java::OrgGedcomx::Gedcomx
@@ -9,30 +9,26 @@ module Gedcomx
 
     def initialize(input = nil)
       @record = input || self.class.java_class.new
-      @people = @record.persons
-      unless @people.nil?
-        @people = @people.map{|person| Person.new(person) }
-      end
-      @relationships = @record.relationships
-      unless @relationships.nil?
-        @relationships = @relationships.map{|relationship| Relationship.new(relationship) }
+
+      @people = []
+      @people = @record.persons.map { |person| Gedcomx::Person.new(person) } if @record.persons
+
+      @relationships = []
+      if @record.relationships
+        @relationships = @record.relationships.map { |relationship| Gedcomx::Relationship.new(relationship) }
       end
     end
 
     def add_person(person)
       return false unless person.is_a? Gedcomx::Person
-      @record.add_person(person)
-      new_person = Person.new(person)
-      @people << new_person
-      new_person
+      @record.add_person(person.to_java)
+      @people << person
     end
 
     def add_relationship(relationship)
       return false unless relationship.is_a? Gedcomx::Relationship
-      @record.add_relationship(relationship)
-      new_relationship = Relationship.new(relationship)
-      @relationships << new_relationship
-      new_relationship
+      @record.add_relationship(relationship.to_java)
+      @relationships << relationship
     end
 
     def each_person
