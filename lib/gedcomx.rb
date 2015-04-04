@@ -68,6 +68,9 @@ require 'gedcomx/name'
 require 'gedcomx/name_part'
 require 'gedcomx/name_form'
 require 'gedcomx/date'
+require 'gedcomx/place'
+require 'gedcomx/gender'
+require 'gedcomx/identifier'
 
 # Load all the java jars
 require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT-sources.jar"

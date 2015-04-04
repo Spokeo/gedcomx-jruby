@@ -64,15 +64,21 @@ module Gedcomx
 
     def initialize(input = nil)
       @name = input || self.class.java_class.new
-      @date = Gedcomx::Date.new(input.get_date) if @name.get_date
+      @date = Gedcomx::Date.new(@name.get_date) if @name.get_date
       @forms = []
       @forms = @name.get_name_forms.map { |form| Gedcomx::NameForm.new(form) } if @name.get_name_forms
     end
 
     def add_form(form)
       return false unless form.is_a? Gedcomx::NameForm
-      @name.to_java.add_name_form form.to_java
+      @name.add_name_form form.to_java
       @forms << form
+    end
+
+    def date=(date)
+      return false unless date.is_a? Gedcomx::Date
+      @name.date = date.to_java
+      @date = date
     end
 
     def confidence

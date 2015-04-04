@@ -1,7 +1,7 @@
 module Gedcomx
   class Person
 
-    attr_reader :names
+    attr_reader :names, :fields, :facts, :identifiers, :gender
 
     def self.java_class
       Java::OrgGedcomxConclusion::Person
@@ -12,10 +12,27 @@ module Gedcomx
       person
     end
 
+    def create(attributes = {})
+      new_person = self.new
+      new_person.principal = attributes[:principal] if attributes[:principal]
+      new_person.relative_id = attributes[:relative_id] if attributes[:relative_id]
+      attributes[:fields].each { |field| new_person.add_field(field) } if attributes[:fields].is_a? Array
+      attributes[:facts].each { |fact| new_person.add_fact(fact) } if attributes[:facts].is_a? Array
+      attributes[:names].each { |name| new_person.add_name(name) } if attributes[:names].is_a? Array
+      attributes[:identifiers].each { |id| new_person.add_identifier(id) } if attributes[:identifiers].is_a? Array
+    end
+
     def initialize(input = nil)
       @person = input || self.class.java_class.new
+      @gender = Gedcomx::Gender.new(@person.get_gender) if @person.get_gender
+      @identifiers = []
+      @identifiers = @person.identifiers.each { |identifier| Gedcomx::Identifier.new(identifier) } if @person.identifiers
       @names = []
       @names = @person.names.each { |name| Gedcomx::Name.new(name) } if @person.names
+      @facts = []
+      @facts = @person.facts.each { |fact| Gedcomx::Fact.new(fact) } if @person.facts
+      @fields = []
+      @fields = @person.fields.each { |field| Gedcomx::Field.new(field) } if @person.fields
     end
 
     def male?
@@ -28,31 +45,63 @@ module Gedcomx
       gender == TYPES[:female]
     end
 
-    def gender
+    def gender_type
       return TYPES[:male] if male?
       TYPES[:female] if female?
     end
 
+    def set_gender(gender)
+      return false unless gender.is_a? Gedcomx::Gender
+      @person.gender = gender.to_java
+      @gender = gender
+    end
+
+    def set_male_gender
+      set_gender(Gedcomx::Gender.create_male)
+    end
+
+    def female_male_gender
+      set_gender(Gedcomx::Gender.create_male)
+    end
+
     # Returns a list of name hashes
-    # def names
-    #   names_list = []
-    #   @person.names.each do |name_obj|
-    #     name_obj.name_forms.each do |name_form_obj|
-    #       name_hash = {}
-    #       name_hash[:full] = name_form_obj.get_full_text
-    #       first_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:given] }
-    #       unless first_name.nil?
-    #         name_hash[:first] = first_name.get_value
-    #       end
-    #       last_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:surname] }
-    #       unless last_name.nil?
-    #         name_hash[:last] = last_name.get_value
-    #       end
-    #       names_list << name_hash
-    #     end
-    #   end
-    #   names_list
-    # end
+    def names_hash
+      names_list = []
+      @person.names.each do |name_obj|
+        name_obj.name_forms.each do |name_form_obj|
+          name_hash = {}
+          name_hash[:full] = name_form_obj.get_full_text
+          first_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:given] }
+          unless first_name.nil?
+            name_hash[:first] = first_name.get_value
+          end
+          last_name = name_form_obj.parts.find{|part| part.get_type.to_s == TYPES[:surname] }
+          unless last_name.nil?
+            name_hash[:last] = last_name.get_value
+          end
+          names_list << name_hash
+        end
+      end
+      names_list
+    end
+
+    def add_fact(fact)
+      return false unless fact.is_a? Gedcomx::Fact
+      @person.add_fact(fact.to_java)
+      @facts << fact
+    end
+
+    def add_field(field)
+      return false unless field.is_a? Gedcomx::Field
+      @person.add_field(field.to_java)
+      @fields << field
+    end
+
+    def add_identifier(identifier)
+      return false unless identifier.is_a? Gedcomx::Identifier
+      @person.add_identifier identifier.to_java
+      @identifiers << identifier
+    end
 
     def add_name(name)
       return false unless name.is_a? Gedcomx::Name
@@ -60,8 +109,19 @@ module Gedcomx
       @names << name
     end
 
-    def add_names(names = [])
-      names.each { |name| add_name name }
+    def add_birthday(info = {})
+      day = info[:day]
+      month = info[:month]
+      year = info[:year]
+    end
+
+    def principal?
+      @person.get_principal
+    end
+
+    def principal=(input_boolean)
+      return false unless input_boolean.is_a? Boolean
+      @person.principal = input_boolean
     end
 
     def event_date
@@ -126,6 +186,11 @@ module Gedcomx
 
     def relative_id
       @person.get_id
+    end
+
+    def relative_id=(id_string)
+      return false unless id_string.is_a? String
+      @person.id = id_string
     end
 
     def to_java
