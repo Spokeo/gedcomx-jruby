@@ -71,6 +71,7 @@ require 'gedcomx/date'
 require 'gedcomx/place'
 require 'gedcomx/gender'
 require 'gedcomx/identifier'
+require 'gedcomx/resource_reference'
 
 # Load all the java jars
 require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT-sources.jar"

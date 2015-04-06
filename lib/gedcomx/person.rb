@@ -8,11 +8,6 @@ module Gedcomx
     end
 
     def self.create(attributes = {})
-      person = self.new
-      person
-    end
-
-    def create(attributes = {})
       new_person = self.new
       new_person.principal = attributes[:principal] if attributes[:principal]
       new_person.relative_id = attributes[:relative_id] if attributes[:relative_id]
@@ -20,6 +15,7 @@ module Gedcomx
       attributes[:facts].each { |fact| new_person.add_fact(fact) } if attributes[:facts].is_a? Array
       attributes[:names].each { |name| new_person.add_name(name) } if attributes[:names].is_a? Array
       attributes[:identifiers].each { |id| new_person.add_identifier(id) } if attributes[:identifiers].is_a? Array
+      new_person
     end
 
     def initialize(input = nil)
@@ -56,12 +52,12 @@ module Gedcomx
       @gender = gender
     end
 
-    def set_male_gender
+    def set_gender_male
       set_gender(Gedcomx::Gender.create_male)
     end
 
-    def female_male_gender
-      set_gender(Gedcomx::Gender.create_male)
+    def set_gender_female
+      set_gender(Gedcomx::Gender.create_female)
     end
 
     # Returns a list of name hashes
@@ -110,9 +106,9 @@ module Gedcomx
     end
 
     def add_birthday(info = {})
-      day = info[:day]
-      month = info[:month]
-      year = info[:year]
+      birth_date = Gedcomx::Date.create_simple(info)
+      birth_fact = Gedcomx::Fact.create(date: birth_date, type: Gedcomx::TYPES[:birth])
+      add_fact(birth_fact)
     end
 
     def principal?
@@ -141,6 +137,9 @@ module Gedcomx
     end
 
     def first_value(type)
+
+      binding.pry
+
       field = Gedcomx.get_first_field(@person, type)
       unless field.nil?
         interpreted = Gedcomx.interpreted_value(field)
@@ -202,6 +201,10 @@ module Gedcomx
       define_method type do
         first_value(type)
       end
+    end
+
+    def gender
+      @gender
     end
 
     protected
