@@ -47,7 +47,22 @@ module Gedcomx
     def initialize(input = nil)
       @date = input || self.class.java_class.new
       @fields = []
-      @fields = @date.fields.map { |field| Gedcomx::Field.new(field) } if @date.fields.is_a? Array
+      @fields = @date.fields.map { |field| Gedcomx::Field.new(field) } if @date.fields
+    end
+
+    def day
+      day_field = @fields.select { |field| field.type == Gedcomx::TYPES[:day] }.first
+      day_field.values.first.text if day_field
+    end
+
+    def month
+      month_field = @fields.select { |field| field.type == Gedcomx::TYPES[:month] }.first
+      month_field.values.first.text if month_field
+    end
+
+    def year
+      year_field = @fields.select { |field| field.type == Gedcomx::TYPES[:year] }.first
+      year_field.values.first.text if year_field
     end
 
     def add_field(field)

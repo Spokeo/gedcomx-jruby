@@ -22,13 +22,13 @@ module Gedcomx
       @person = input || self.class.java_class.new
       @gender = Gedcomx::Gender.new(@person.get_gender) if @person.get_gender
       @identifiers = []
-      @identifiers = @person.identifiers.each { |identifier| Gedcomx::Identifier.new(identifier) } if @person.identifiers
+      @identifiers = @person.identifiers.map { |identifier| Gedcomx::Identifier.new(identifier) } if @person.identifiers
       @names = []
-      @names = @person.names.each { |name| Gedcomx::Name.new(name) } if @person.names
+      @names = @person.names.map { |name| Gedcomx::Name.new(name) } if @person.names
       @facts = []
-      @facts = @person.facts.each { |fact| Gedcomx::Fact.new(fact) } if @person.facts
+      @facts = @person.facts.map { |fact| Gedcomx::Fact.new(fact) } if @person.facts
       @fields = []
-      @fields = @person.fields.each { |field| Gedcomx::Field.new(field) } if @person.fields
+      @fields = @person.fields.map { |field| Gedcomx::Field.new(field) } if @person.fields
     end
 
     def male?
@@ -137,9 +137,6 @@ module Gedcomx
     end
 
     def first_value(type)
-
-      binding.pry
-
       field = Gedcomx.get_first_field(@person, type)
       unless field.nil?
         interpreted = Gedcomx.interpreted_value(field)
