@@ -129,18 +129,22 @@ module Gedcomx
   end
 
   def self.get_facts(obj, type)
+    return unless obj
     obj.facts.select{|fact| fact.get_type.to_s == TYPES[type] }
   end
 
   def self.get_first_fact(obj, type)
+    return unless obj
     obj.facts.find{|fact| fact.get_type.to_s == TYPES[type] }
   end
 
   def self.get_fields(obj, type)
+    return unless obj
     obj.fields.select{|field| field.get_type.to_s == TYPES[type] }
   end
 
   def self.get_first_field(obj, type)
+    return unless obj
     obj.fields.find{|field| field.get_type.to_s == TYPES[type] }
   end
 
