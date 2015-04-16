@@ -4,12 +4,14 @@ module Gedcomx
   TYPES = {
       age: 'http://gedcomx.org/Age',
       birth: 'http://gedcomx.org/Birth',
+      birth_name: 'http://gedcomx.org/BirthName',
       birth_place_father: 'http://gedcomx.org/FatherBirthPlace',
       birth_place_mother: 'http://gedcomx.org/MotherBirthPlace',
       census: 'http://gedcomx.org/Census',
       collection: 'http://gedcomx.org/Collection',
       collection_id: 'http://familysearch.org/types/fields/FS_COLLECTION_ID',
       couple: 'http://gedcomx.org/Couple',
+      date: 'http://gedcomx.org/Date',
       day: 'http://gedcomx.org/Day',
       digital_artifact: 'http://gedcomx.org/DigitalArtifact',
       ethnicity: 'http://familysearch.org/types/fields/PR_ETHNICITY_CSS',
@@ -23,6 +25,7 @@ module Gedcomx
       film_number: 'http://familysearch.org/types/fields/FILM_NUMBER',
       folder: 'http://familysearch.org/types/fields/FOLDER',
       folder_image_seq: 'http://familysearch.org/types/fields/FOLDER_IMAGE_SEQ',
+      gender: 'http://gedcomx.org/Gender',
       given: 'http://gedcomx.org/Given',
       household: 'http://familysearch.org/types/fields/HOUSEHOLD_ID',
       image_apid: 'http://familysearch.org/types/fields/IMAGE_APID',
@@ -30,9 +33,12 @@ module Gedcomx
       image_number: 'http://familysearch.org/types/fields/IMAGE_NBR',
       image_pal: 'http://familysearch.org/types/fields/IMAGE_PAL',
       immigration: 'http://gedcomx.org/Immigration',
+      interpreted: 'http://gedcomx.org/Interpreted',
       male: 'http://gedcomx.org/Male',
       marital_status: 'http://gedcomx.org/MaritalStatus',
       month: 'http://gedcomx.org/Month',
+      name: 'http://gedcomx.org/Name',
+      original: 'http://gedcomx.org/Original',
       parent_child: 'http://gedcomx.org/ParentChild',
       persistent: 'http://gedcomx.org/Persistent',
       race: 'http://gedcomx.org/Race',
@@ -55,8 +61,42 @@ require 'gedcomx/person'
 require 'gedcomx/relationship'
 require 'gedcomx/record'
 require 'gedcomx/iterator'
+require 'gedcomx/fact'
+require 'gedcomx/field'
+require 'gedcomx/field_value'
+require 'gedcomx/name'
+require 'gedcomx/name_part'
+require 'gedcomx/name_form'
+require 'gedcomx/date'
+require 'gedcomx/place'
+require 'gedcomx/gender'
+require 'gedcomx/identifier'
+require 'gedcomx/resource_reference'
 
-Dir.glob('lib/gedcomx_java_jars/*.jar').each { |jar| require jar }
+# Load all the java jars
+require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/enunciate-gedcomx-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/familysearch-api-client-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/familysearch-api-client-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/familysearch-api-model-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/familysearch-api-model-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-atom-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-atom-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-date-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-date-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-fileformat-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-fileformat-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-model-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-model-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-rs-client-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-rs-client-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-rs-rt-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-rs-rt-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-rt-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-rt-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/gedcomx-test-support-1.0.82.M1-SNAPSHOT-sources.jar"
+require "gedcomx_java_jars/gedcomx-test-support-1.0.82.M1-SNAPSHOT.jar"
+require "gedcomx_java_jars/jaxb-all.osgi-2.1.6.jar"
 
 module Gedcomx
   MONTH_MAP = {
@@ -80,19 +120,31 @@ module Gedcomx
       county: :region
   }
 
+  def self.java_uri_class
+    Java::OrgGedcomxCommon::URI
+  end
+
+  def self.new_uri(uri_string)
+    self.java_uri_class.new(uri_string.to_s)
+  end
+
   def self.get_facts(obj, type)
+    return unless obj
     obj.facts.select{|fact| fact.get_type.to_s == TYPES[type] }
   end
 
   def self.get_first_fact(obj, type)
+    return unless obj
     obj.facts.find{|fact| fact.get_type.to_s == TYPES[type] }
   end
 
   def self.get_fields(obj, type)
+    return unless obj
     obj.fields.select{|field| field.get_type.to_s == TYPES[type] }
   end
 
   def self.get_first_field(obj, type)
+    return unless obj
     obj.fields.find{|field| field.get_type.to_s == TYPES[type] }
   end
 
