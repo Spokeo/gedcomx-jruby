@@ -29,6 +29,7 @@ module Gedcomx
       given: 'http://gedcomx.org/Given',
       household: 'http://familysearch.org/types/fields/HOUSEHOLD_ID',
       image_apid: 'http://familysearch.org/types/fields/IMAGE_APID',
+      image_ark: 'http://familysearch.org/types/fields/ImageArk',
       image_id: 'http://familysearch.org/types/fields/IMAGE_PAL',
       image_number: 'http://familysearch.org/types/fields/IMAGE_NBR',
       image_pal: 'http://familysearch.org/types/fields/IMAGE_PAL',
